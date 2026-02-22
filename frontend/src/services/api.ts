@@ -1,0 +1,122 @@
+const API = '/api'
+
+function getAuthHeader(): HeadersInit {
+  const token = localStorage.getItem('accessToken')
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+export async function fetchApi<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(API + path, {
+    ...init,
+    headers: { 'Content-Type': 'application/json', ...getAuthHeader(), ...init?.headers },
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.message || res.statusText)
+  }
+  return res.json()
+}
+
+export const eventsApi = {
+  list: (status = 'OPEN') => fetchApi<{ content: EventDto[] }>(`/events?status=${status}`),
+  get: (id: number) => fetchApi<EventDto>(`/events/${id}`),
+  create: (data: CreateEventRequest) =>
+    fetchApi<EventDto>('/events', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: number, data: CreateEventRequest) =>
+    fetchApi<EventDto>(`/events/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  publish: (id: number) => fetchApi<EventDto>(`/events/${id}/publish`, { method: 'POST' }),
+  analytics: (id: number) => fetchApi<EventAnalyticsDto>(`/events/${id}/analytics`),
+}
+
+export const applicationsApi = {
+  apply: (eventId: number) =>
+    fetchApi<ApplicationDto>(`/applications/events/${eventId}/apply`, { method: 'POST' }),
+  byEvent: (eventId: number) => fetchApi<ApplicationDto[]>(`/applications/events/${eventId}`),
+  my: () => fetchApi<ApplicationDto[]>('/applications/me'),
+}
+
+export const lotteryApi = {
+  trigger: (eventId: number) =>
+    fetchApi<void>(`/events/${eventId}/lottery/trigger`, { method: 'POST' }),
+}
+
+export const paymentsApi = {
+  checkout: (applicationId: number) =>
+    fetchApi<{ sessionId: string; url: string }>(`/payments/checkout/${applicationId}`, { method: 'POST' }),
+  success: (sessionId: string) =>
+    fetch('/api/payments/success?session_id=' + sessionId, { method: 'POST', headers: getAuthHeader() }),
+}
+
+export const ticketsApi = {
+  my: () => fetchApi<TicketDto[]>('/tickets/me'),
+  byEvent: (eventId: number) => fetchApi<TicketDto[]>(`/tickets/event/${eventId}`),
+}
+
+export const checkInApi = {
+  checkIn: (eventId: number, tokenId: number) =>
+    fetchApi<TicketDto>(`/checkin/events/${eventId}/tickets/${tokenId}`, { method: 'POST' }),
+}
+
+export const certificatesApi = {
+  download: (ticketId: number) =>
+    fetch('/api/certificates/ticket/' + ticketId + '/download', { headers: getAuthHeader() }),
+  verify: (certificateId: string) =>
+    fetchApi<boolean>(`/certificates/verify/${certificateId}`),
+}
+
+export interface EventDto {
+  id: number
+  title: string
+  description?: string
+  category?: string
+  eventDate: string
+  location?: string
+  price: number
+  maxSeats: number
+  lotteryDeadline: string
+  status: string
+}
+
+export interface CreateEventRequest {
+  title: string
+  description?: string
+  category?: string
+  eventDate: string
+  location?: string
+  price: number
+  maxSeats: number
+  lotteryDeadline: string
+}
+
+export interface ApplicationDto {
+  id: number
+  userId: number
+  eventId: number
+  status: string
+  userEmail?: string
+  userDisplayName?: string
+}
+
+export interface TicketDto {
+  id: number
+  eventId: number
+  tokenId: number
+  checkedIn: boolean
+  checkedInAt?: string
+}
+
+export interface EventAnalyticsDto {
+  eventId: number
+  eventTitle: string
+  status: string
+  totalApplicants: number
+  selectedCount: number
+  waitlistedCount: number
+  paidCount: number
+  nftsMinted: number
+  checkedInCount: number
+  certificatesIssued: number
+  revenue: number
+  paymentPercentage: number
+  noShowRate: number
+}

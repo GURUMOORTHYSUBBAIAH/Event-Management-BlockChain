@@ -1,0 +1,53 @@
+{
+  "info": { "name": "EventChain API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": { "method": "POST", "url": "{{base}}/api/auth/register", "body": { "mode": "raw", "raw": "{\"email\":\"user@test.com\",\"password\":\"password123\",\"displayName\":\"Test User\"}" } }
+        },
+        {
+          "name": "Login",
+          "request": { "method": "POST", "url": "{{base}}/api/auth/login", "body": { "mode": "raw", "raw": "{\"email\":\"user@test.com\",\"password\":\"password123\"}" } }
+        },
+        {
+          "name": "Refresh Token",
+          "request": { "method": "POST", "url": "{{base}}/api/auth/refresh", "body": { "mode": "raw", "raw": "{\"refreshToken\":\"{{refreshToken}}\"}" } }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        { "name": "List Events", "request": { "method": "GET", "url": "{{base}}/api/events?status=OPEN" } },
+        { "name": "Get Event", "request": { "method": "GET", "url": "{{base}}/api/events/1" } },
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "url": "{{base}}/api/events",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "body": { "mode": "raw", "raw": "{\"title\":\"Test Event\",\"description\":\"Desc\",\"category\":\"Tech\",\"eventDate\":\"2025-12-31T18:00:00\",\"location\":\"Online\",\"price\":10,\"maxSeats\":100,\"lotteryDeadline\":\"2025-12-15T23:59:59\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "Apply",
+          "request": {
+            "method": "POST",
+            "url": "{{base}}/api/applications/events/1/apply",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        },
+        { "name": "My Applications", "request": { "method": "GET", "url": "{{base}}/api/applications/me", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }] } }
+      ]
+    }
+  ],
+  "variable": [{ "key": "base", "value": "http://localhost:8080" }, { "key": "accessToken", "value": "" }, { "key": "refreshToken", "value": "" }]
+}
