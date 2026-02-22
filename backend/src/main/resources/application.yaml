@@ -2,7 +2,7 @@ spring:
   application:
     name: eventchain-backend
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:event_management_chain}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://root:pQtxnsziHYPuHDFEpXpmIlJwlbXkOqRk@shinkansen.proxy.rlwy.net:16703/railway
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
