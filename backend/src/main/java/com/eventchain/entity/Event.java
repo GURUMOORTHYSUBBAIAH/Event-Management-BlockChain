@@ -51,6 +51,110 @@ public class Event {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public LocalDateTime getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(LocalDateTime eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Integer getMaxSeats() {
+        return maxSeats;
+    }
+
+    public void setMaxSeats(Integer maxSeats) {
+        this.maxSeats = maxSeats;
+    }
+
+    public LocalDateTime getLotteryDeadline() {
+        return lotteryDeadline;
+    }
+
+    public void setLotteryDeadline(LocalDateTime lotteryDeadline) {
+        this.lotteryDeadline = lotteryDeadline;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

@@ -57,6 +57,11 @@ export default function Register() {
       <p className="mt-4 text-slate-400">
         Already have an account? <Link to="/login" className="text-cyan-400">Login</Link>
       </p>
+      <p className="mt-2">
+        <a href="http://localhost:8080/oauth2/authorization/google" className="text-cyan-400">
+          Register with Google
+        </a>
+      </p>
     </div>
   )
 }

@@ -1,28 +1,15 @@
 spring:
   application:
     name: eventchain-backend
-  datasource:
-    url: jdbc:mysql://root:pQtxnsziHYPuHDFEpXpmIlJwlbXkOqRk@shinkansen.proxy.rlwy.net:16703/railway
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID:placeholder}
-            client-secret: ${GOOGLE_CLIENT_SECRET:placeholder}
-            redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:5173/oauth2/callback}
-            scope: email,profile
 
 server:
   port: 8080
@@ -32,11 +19,12 @@ jwt:
   access-token-expiration-ms: 900000
   refresh-token-expiration-ms: 604800000
 
-stripe:
-  api-key: ${STRIPE_SECRET_KEY:sk_test_}
-  webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
-  success-url: ${STRIPE_SUCCESS_URL:http://localhost:5173/payment/success}
-  cancel-url: ${STRIPE_CANCEL_URL:http://localhost:5173/payment/cancel}
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID:rzp_test_}
+  key-secret: ${RAZORPAY_KEY_SECRET:}
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:}
+  success-url: ${RAZORPAY_SUCCESS_URL:http://localhost:5173/payment/success}
+  cancel-url: ${RAZORPAY_CANCEL_URL:http://localhost:5173/payment/cancel}
 
 blockchain:
   enabled: ${BLOCKCHAIN_ENABLED:false}

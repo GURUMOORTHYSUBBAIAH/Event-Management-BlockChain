@@ -37,7 +37,14 @@ export default function MyApplications() {
                 <Link to={`/events/${app.eventId}`} className="font-semibold hover:text-cyan-400">
                   {event?.title || `Event #${app.eventId}`}
                 </Link>
-                <p className="text-slate-400 text-sm mt-1">Status: {app.status}</p>
+                <p className="text-slate-400 text-sm mt-1">
+                  Status: <span className="font-semibold">{app.status}</span>
+                </p>
+                {event && (
+                  <p className="text-emerald-400 text-xs mt-1">
+                    Amount: ₹{Number(event.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  </p>
+                )}
               </div>
               {app.status === 'SELECTED' && (
                 <button onClick={() => handlePay(app)} className="px-4 py-2 bg-green-600 rounded">

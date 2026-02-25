@@ -13,4 +13,28 @@ public class WalletConnectRequest {
 
     @NotBlank(message = "Message is required")
     private String message;
+
+    public String getWalletAddress() {
+        return walletAddress;
+    }
+
+    public void setWalletAddress(String walletAddress) {
+        this.walletAddress = walletAddress;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

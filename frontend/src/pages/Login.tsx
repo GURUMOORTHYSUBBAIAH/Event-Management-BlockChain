@@ -49,7 +49,7 @@ export default function Login() {
         Don't have an account? <Link to="/register" className="text-cyan-400">Register</Link>
       </p>
       <p className="mt-2">
-        <a href="/api/oauth2/authorization/google" className="text-cyan-400">
+        <a href="http://localhost:8080/api/oauth2/authorization/google" className="text-cyan-400">
           Login with Google
         </a>
       </p>

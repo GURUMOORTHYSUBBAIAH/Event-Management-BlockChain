@@ -68,9 +68,15 @@ export default function EventDetail() {
       <h1 className="text-2xl font-bold mb-4">{event.title}</h1>
       <p className="text-slate-400 mb-4">{event.description}</p>
       <div className="flex gap-4 text-sm mb-6">
-        <span>📅 {new Date(event.eventDate).toLocaleString()}</span>
+        <span>📅 {new Date(event.eventDate).toLocaleString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        })}</span>
         <span>📍 {event.location}</span>
-        <span>💰 ${Number(event.price).toFixed(2)}</span>
+        <span>💰 ₹{Number(event.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
         <span>🎫 {event.maxSeats} seats</span>
         <span className="text-cyan-400">{event.status}</span>
       </div>

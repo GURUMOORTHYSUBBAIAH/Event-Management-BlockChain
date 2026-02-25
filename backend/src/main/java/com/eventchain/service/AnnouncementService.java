@@ -57,14 +57,14 @@ public class AnnouncementService {
     }
 
     private AnnouncementDto toDto(Announcement a) {
-        return AnnouncementDto.builder()
-                .id(a.getId())
-                .eventId(a.getEvent() != null ? a.getEvent().getId() : null)
-                .title(a.getTitle())
-                .content(a.getContent())
-                .type(a.getType())
-                .createdBy(a.getCreatedBy() != null ? a.getCreatedBy().getId() : null)
-                .createdAt(a.getCreatedAt())
-                .build();
+        AnnouncementDto dto = new AnnouncementDto();
+        dto.setId(a.getId());
+        dto.setEventId(a.getEvent() != null ? a.getEvent().getId() : null);
+        dto.setTitle(a.getTitle());
+        dto.setContent(a.getContent());
+        dto.setType(a.getType());
+        dto.setCreatedBy(a.getCreatedBy() != null ? a.getCreatedBy().getId() : null);
+        dto.setCreatedAt(a.getCreatedAt());
+        return dto;
     }
 }

@@ -44,7 +44,16 @@ export default function Dashboard() {
         <StatCard title="NFTs Minted" value={analytics.nftsMinted} />
         <StatCard title="Checked In" value={analytics.checkedInCount} />
         <StatCard title="Certificates" value={analytics.certificatesIssued} />
-        <StatCard title="Revenue" value={'$' + Number(analytics.revenue).toFixed(2)} />
+        <StatCard
+          title="Revenue"
+          value={
+            '₹' +
+            Number(analytics.revenue).toLocaleString('en-IN', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          }
+        />
         <StatCard title="Payment %" value={Number(analytics.paymentPercentage).toFixed(1) + '%'} />
       </div>
     </div>

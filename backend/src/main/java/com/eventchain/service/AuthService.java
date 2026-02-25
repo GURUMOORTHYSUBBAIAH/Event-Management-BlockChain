@@ -1,6 +1,23 @@
 package com.eventchain.service;
 
-import com.eventchain.dto.*;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.eventchain.dto.AuthResponse;
+import com.eventchain.dto.LoginRequest;
+import com.eventchain.dto.RefreshTokenRequest;
+import com.eventchain.dto.RegisterRequest;
+import com.eventchain.dto.WalletConnectRequest;
 import com.eventchain.entity.RefreshToken;
 import com.eventchain.entity.Role;
 import com.eventchain.entity.User;
@@ -10,19 +27,8 @@ import com.eventchain.repository.RoleRepository;
 import com.eventchain.repository.UserRepository;
 import com.eventchain.security.JwtProvider;
 import com.eventchain.security.UserPrincipal;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -45,9 +51,15 @@ public class AuthService {
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setDisplayName(Optional.ofNullable(request.getDisplayName()).orElse(request.getEmail().split("@")[0]));
+        user.setDisplayName(Optional.ofNullable(request.getDisplayName())
+                .orElseGet(() -> request.getEmail().split("@")[0]));
         user.setEnabled(true);
-        Role userRole = roleRepository.findByName("USER").orElseThrow();
+        Role userRole = roleRepository.findByName("USER")
+                .orElseGet(() -> {
+                    Role r = new Role();
+                    r.setName("USER");
+                    return roleRepository.save(r);
+                });
         user.setRoles(Set.of(userRole));
         user = userRepository.save(user);
 
@@ -115,18 +127,19 @@ public class AuthService {
     }
 
     private AuthResponse buildAuthResponse(User user, String accessToken, String refreshToken) {
-        return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .expiresIn(accessTokenExpirationMs)
-                .user(AuthResponse.UserDto.builder()
-                        .id(user.getId())
-                        .email(user.getEmail())
-                        .displayName(user.getDisplayName())
-                        .walletAddress(user.getWalletAddress())
-                        .profileImageUrl(user.getProfileImageUrl())
-                        .build())
-                .roles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
-                .build();
+        AuthResponse.UserDto dto = new AuthResponse.UserDto();
+        dto.setId(user.getId());
+        dto.setEmail(user.getEmail());
+        dto.setDisplayName(user.getDisplayName());
+        dto.setWalletAddress(user.getWalletAddress());
+        dto.setProfileImageUrl(user.getProfileImageUrl());
+
+        AuthResponse response = new AuthResponse();
+        response.setAccessToken(accessToken);
+        response.setRefreshToken(refreshToken);
+        response.setExpiresIn(accessTokenExpirationMs);
+        response.setUser(dto);
+        response.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
+        return response;
     }
 }

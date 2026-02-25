@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, ReactNode, useContext, useState } from 'react'
+
+const API = 'http://localhost:8080/api'
 
 interface User {
   id: number
@@ -59,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshAuth = async () => {
     const rt = localStorage.getItem('refreshToken')
     if (!rt) return
-    const res = await fetch('/api/auth/refresh', {
+    const res = await fetch(`${API}/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken: rt }),
@@ -73,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const login = async (email: string, password: string) => {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch(`${API}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -84,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const register = async (email: string, password: string, displayName?: string) => {
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch(`${API}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, displayName }),

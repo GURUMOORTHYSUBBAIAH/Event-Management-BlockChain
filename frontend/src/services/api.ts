@@ -1,4 +1,4 @@
-const API = '/api'
+const API = 'http://localhost:8080/api'
 
 function getAuthHeader(): HeadersInit {
   const token = localStorage.getItem('accessToken')
@@ -10,11 +10,34 @@ export async function fetchApi<T>(path: string, init?: RequestInit): Promise<T> 
     ...init,
     headers: { 'Content-Type': 'application/json', ...getAuthHeader(), ...init?.headers },
   })
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.message || res.statusText)
+    const error = await res.json().catch(() => {})
+    throw new Error(error.message || 'Request failed')
   }
+
   return res.json()
+}
+
+export async function fetchBlob(path: string, init?: RequestInit): Promise<Blob> {
+  const res = await fetch(API + path, {
+    ...init,
+    headers: { ...getAuthHeader(), ...init?.headers },
+  })
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    let message = 'Request failed'
+    try {
+      const json = text ? JSON.parse(text) : null
+      if (json?.message) message = json.message
+    } catch {
+      // ignore
+    }
+    throw new Error(message)
+  }
+
+  return res.blob()
 }
 
 export const eventsApi = {
@@ -44,7 +67,7 @@ export const paymentsApi = {
   checkout: (applicationId: number) =>
     fetchApi<{ sessionId: string; url: string }>(`/payments/checkout/${applicationId}`, { method: 'POST' }),
   success: (sessionId: string) =>
-    fetch('/api/payments/success?session_id=' + sessionId, { method: 'POST', headers: getAuthHeader() }),
+    fetchApi<void>(`/payments/success?session_id=${sessionId}`, { method: 'POST' }),
 }
 
 export const ticketsApi = {
@@ -59,7 +82,7 @@ export const checkInApi = {
 
 export const certificatesApi = {
   download: (ticketId: number) =>
-    fetch('/api/certificates/ticket/' + ticketId + '/download', { headers: getAuthHeader() }),
+    fetchBlob(`/certificates/ticket/${ticketId}/download`),
   verify: (certificateId: string) =>
     fetchApi<boolean>(`/certificates/verify/${certificateId}`),
 }

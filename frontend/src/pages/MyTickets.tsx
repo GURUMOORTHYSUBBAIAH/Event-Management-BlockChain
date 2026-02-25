@@ -21,8 +21,7 @@ export default function MyTickets() {
   }, [])
 
   const handleDownloadCert = async (ticketId: number) => {
-    const res = await certificatesApi.download(ticketId)
-    const blob = await res.blob()
+    const blob = await certificatesApi.download(ticketId)
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url

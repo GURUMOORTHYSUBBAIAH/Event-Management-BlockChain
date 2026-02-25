@@ -3,10 +3,10 @@ services:
   mysql:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: pQtxnsziHYPuHDFEpXpmIlJwlbXkOqRk
       MYSQL_DATABASE: event_management_chain
       MYSQL_USER: eventchain
-      MYSQL_PASSWORD: eventchain
+      MYSQL_PASSWORD: pQtxnsziHYPuHDFEpXpmIlJwlbXkOqRk
     ports:
       - "3306:3306"
     volumes:
@@ -22,18 +22,26 @@ services:
     ports:
       - "8080:8080"
     environment:
+      SPRING_PROFILES_ACTIVE: mysql
       DB_HOST: mysql
       DB_PORT: 3306
       DB_NAME: event_management_chain
       DB_USERNAME: eventchain
-      DB_PASSWORD: eventchain
-      JWT_SECRET: your-256-bit-secret-key-for-jwt-signing-must-be-at-least-32-chars
-      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_}
-      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
-      FRONTEND_URL: http://localhost:5173
+      DB_PASSWORD: pQtxnsziHYPuHDFEpXpmIlJwlbXkOqRk
+      JWT_SECRET: gdDBoiF2hvUB7evOA4DowJObX1b50cIk4AudJkYNp55WhAjRO5AS3mFIYWwA0wVFdEf4NS+R/FWYq7Jei5n4dw==
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-rzp_test_}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
+      RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:-}
+      FRONTEND_URL: https://event-management-block-chain.vercel.app
     depends_on:
       mysql:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/public/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
   mysql_data:

@@ -59,16 +59,16 @@ public class ApplicationService {
     }
 
     private ApplicationDto toDto(Application a) {
-        return ApplicationDto.builder()
-                .id(a.getId())
-                .userId(a.getUser().getId())
-                .eventId(a.getEvent().getId())
-                .status(a.getStatus())
-                .applicationOrder(a.getApplicationOrder())
-                .lotteryRound(a.getLotteryRound())
-                .createdAt(a.getCreatedAt())
-                .userEmail(a.getUser().getEmail())
-                .userDisplayName(a.getUser().getDisplayName())
-                .build();
+        ApplicationDto dto = new ApplicationDto();
+        dto.setId(a.getId());
+        dto.setUserId(a.getUser() != null ? a.getUser().getId() : null);
+        dto.setEventId(a.getEvent() != null ? a.getEvent().getId() : null);
+        dto.setStatus(a.getStatus());
+        dto.setApplicationOrder(a.getApplicationOrder());
+        dto.setLotteryRound(a.getLotteryRound());
+        dto.setCreatedAt(a.getCreatedAt());
+        dto.setUserEmail(a.getUser() != null ? a.getUser().getEmail() : null);
+        dto.setUserDisplayName(a.getUser() != null ? a.getUser().getDisplayName() : null);
+        return dto;
     }
 }

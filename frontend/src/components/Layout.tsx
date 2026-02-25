@@ -2,8 +2,9 @@ import { Outlet, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function Layout() {
-  const { token, user, logout } = useAuth()
+  const { token, user, roles, logout } = useAuth()
   const navigate = useNavigate()
+  const isAdmin = roles.some((r) => ['SUPER_ADMIN', 'ORG_ADMIN', 'EVENT_HEAD'].includes(r))
   const handleLogout = () => {
     logout()
     navigate('/login')
@@ -15,6 +16,11 @@ export default function Layout() {
           <Link to="/" className="font-bold text-xl">EventChain</Link>
           <div className="flex gap-4">
             <Link to="/" className="hover:text-cyan-400">Events</Link>
+            {isAdmin && (
+              <Link to="/admin/events" className="hover:text-emerald-400">
+                Admin
+              </Link>
+            )}
             {token && (
               <>
                 <Link to="/my-applications" className="hover:text-cyan-400">My Applications</Link>

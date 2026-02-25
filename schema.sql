@@ -207,6 +207,38 @@ CREATE TABLE `announcements` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
+-- Add performance indexes
+-- ----------------------------
+
+-- Users table indexes
+ALTER TABLE `users` ADD INDEX `idx_user_email` (`email`);
+ALTER TABLE `users` ADD INDEX `idx_user_created_at` (`created_at`);
+
+-- Events table indexes
+ALTER TABLE `events` ADD INDEX `idx_event_creator_date` (`created_by`, `event_date`);
+ALTER TABLE `events` ADD INDEX `idx_event_status_date` (`status`, `event_date`);
+
+-- Applications table indexes
+ALTER TABLE `applications` ADD INDEX `idx_application_user_status` (`user_id`, `status`);
+ALTER TABLE `applications` ADD INDEX `idx_application_event_status` (`event_id`, `status`);
+ALTER TABLE `applications` ADD INDEX `idx_application_created_at` (`created_at`);
+
+-- Payments table indexes
+ALTER TABLE `payments` ADD INDEX `idx_payment_status_created` (`status`, `created_at`);
+ALTER TABLE `payments` ADD INDEX `idx_payment_application_status` (`application_id`, `status`);
+
+-- Tickets table indexes
+ALTER TABLE `tickets` ADD INDEX `idx_ticket_user_event` (`user_id`, `event_id`);
+ALTER TABLE `tickets` ADD INDEX `idx_token_id` (`token_id`);
+
+-- Certificates table indexes
+ALTER TABLE `certificates` ADD INDEX `idx_certificate_user_event` (`user_id`, `event_id`);
+ALTER TABLE `certificates` ADD INDEX `idx_certificate_id_hash` (`certificate_id`, `file_hash`);
+
+-- Announcements table indexes
+ALTER TABLE `announcements` ADD INDEX `idx_announcement_created_type` (`created_at`, `type`);
+
+-- ----------------------------
 -- Insert default roles
 -- ----------------------------
 INSERT INTO `roles` (`name`) VALUES ('SUPER_ADMIN'), ('ORG_ADMIN'), ('EVENT_HEAD'), ('TEAM_MEMBER'), ('USER');
